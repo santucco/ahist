@@ -104,6 +104,7 @@ debug("tagname:%s\n", tagname)
 for {
 	ev, err:=w.ReadEvent()
 	if err!=nil {
+		@<Cleanup@>
 		return
 	}
 	@<Process main window@>
@@ -360,6 +361,10 @@ histch chan entry=make(chan entry)
 @<Cleanup@>=
 close(histch)
 
+@
+@<Variables outside the loop@>=
+var hch <-chan *goacme.Event
+
 @ The goroutine handles two variants of events.
 @<Start history processing@>=
 go func(){
@@ -374,13 +379,17 @@ go func(){
 	}
 }()
 
+@
+@<Variables outside the loop@>=
+var h *goacme.Window
 
 @ Events from |histch| channel is written to the history.
 @<Process |entr| entry from |histch|@>=
 if !ok {
 	if h!=nil {
 		h.Del(true)
-		h.Close()	
+		h.Close()
+		h=nil
 	}
 	return
 }
@@ -414,10 +423,7 @@ histch<-entry{b:b, e:e, s:s}
 
 @
 @<Variables outside the loop@>=
-var h *goacme.Window
-var hch <-chan *goacme.Event
 var history map[int]int
-
 
 @ If the history window |h| does not exist, we create it and (re)create |history| map too.
 @<Open history window, if it does not exist@>=
