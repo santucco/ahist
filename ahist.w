@@ -187,8 +187,6 @@ if len(ev.Arg)>0 {
 @<Set addr to dot@>
 
 @ We take a search string and address from |ev| event.
-Then we write the current position with the string to the history to track the search,
-because it already has a place.
 @<Process in case of a request by |B3| command in the body@>=
 s=ev.Text
 if len(ev.Arg)>0 {
@@ -196,7 +194,6 @@ if len(ev.Arg)>0 {
 }
 b:=ev.Begin
 e:=ev.End
-@<Write history@>
 @<Set addr to |b, e|@>
 
 @ For |Look| command we set address and continue processing.
@@ -274,8 +271,36 @@ if err:=w.WriteAddr("#%d,#%d", b, e); err!=nil {
 }
 debug("set addr to %d, %d\n", b, e)
 
-@ Search is processed by writing |"/<regex>/"| to |"addr"| file, but before regex-specific symbols of |s| have to be escaped
+@ We need to story previous history |entry| for the case, when |Look| in a tag is executed
+but without selected text. In the case a search string is taken from \.{Acme}.
+We take it from |lentr|
+@<Global variables@>=
+lentr entry
+
+@ Let's add |empty| function for |entry|
+@c
+func (this entry) empty() bool {
+	return this.b==this.e
+}
+
+@ Search is processed by writing |"/<regex>/"| to |"addr"| file,
+but before regex-specific symbols of |s| have to be escaped
+In the case of empty search string we take it from |lentr|.
+Also we write the current position with the string to the history to track the search,
+because it already has a place.
 @<Make a search of |s|@>={
+	debug("last entry : %v\n", lentr)
+	if len(s)==0 {
+		if !lentr.empty() {
+			b=lentr.b
+			e=lentr.e
+			s=lentr.s
+			@<Set addr to |b, e|@>
+		}
+	} else if b!=e {
+		lentr=entry{b,e,s}
+		@<Write history@>
+	}
 	es:=""
 	for _, v:=range s {
 		if strings.ContainsRune("|\\/[].+?()*^$", v) {
@@ -419,6 +444,7 @@ h.UnreadEvent(ev)
 
 @
 @<Write history@>=
+debug("request to store a history: %v,%v %q\n", b, e, s)
 histch<-entry{b:b, e:e, s:s}
 
 @
