@@ -15,3 +15,4 @@ Tracking can be stopped by _-ahist_ command from the window at any time.
 ## Bugs
 
 **Acme** does not reflect immediately that a window is modified. So an appearance of `Put` command can be late a bit.
+**ahist** conflicts with other **Acme**'s applications that open `event` file, because **Acme** sends events only to a last connected client of `event` file.
