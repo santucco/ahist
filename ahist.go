@@ -157,7 +157,7 @@ lentr entry
 /*41:*/
 
 
-//line ahist.w:382
+//line ahist.w:381
 
 histch chan entry= make(chan entry)
 
@@ -176,7 +176,7 @@ type(
 /*40:*/
 
 
-//line ahist.w:375
+//line ahist.w:374
 
 entry struct{
 b,e int
@@ -275,8 +275,8 @@ defer w.Close()
 //line ahist.w:80
 
 {
-del:=append([]string{},tagname)
-add:=append([]string{},"-"+tagname)
+del:=[]string{tagname,"-"+tagname}
+add:=[]string{"-"+tagname}
 changeTag(w,del,add)
 }
 
@@ -329,7 +329,7 @@ name= string(ss[0])
 /*44:*/
 
 
-//line ahist.w:394
+//line ahist.w:393
 
 go func(){
 
@@ -337,7 +337,7 @@ go func(){
 /*43:*/
 
 
-//line ahist.w:390
+//line ahist.w:389
 
 var hch<-chan*goacme.Event
 
@@ -350,7 +350,7 @@ var hch<-chan*goacme.Event
 /*45:*/
 
 
-//line ahist.w:408
+//line ahist.w:407
 
 var h*goacme.Window
 
@@ -363,7 +363,7 @@ var h*goacme.Window
 /*49:*/
 
 
-//line ahist.w:451
+//line ahist.w:450
 
 var history map[int]int
 
@@ -372,7 +372,7 @@ var history map[int]int
 /*:49*/
 
 
-//line ahist.w:396
+//line ahist.w:395
 
 for{
 select{
@@ -382,7 +382,7 @@ case entr,ok:=<-histch:
 /*46:*/
 
 
-//line ahist.w:412
+//line ahist.w:411
 
 if!ok{
 if h!=nil{
@@ -397,7 +397,7 @@ return
 /*50:*/
 
 
-//line ahist.w:455
+//line ahist.w:454
 
 if h==nil{
 var err error
@@ -416,7 +416,7 @@ history= make(map[int]int)
 /*:50*/
 
 
-//line ahist.w:421
+//line ahist.w:420
 
 if ee,ok:=history[entr.b];ok&&ee==entr.e{
 continue
@@ -431,7 +431,7 @@ h.WriteCtl("clean")
 /*:46*/
 
 
-//line ahist.w:400
+//line ahist.w:399
 
 case ev,ok:=<-hch:
 
@@ -439,7 +439,7 @@ case ev,ok:=<-hch:
 /*47:*/
 
 
-//line ahist.w:433
+//line ahist.w:432
 
 if!ok{
 debug("history is closed\n")
@@ -457,7 +457,7 @@ h.UnreadEvent(ev)
 /*:47*/
 
 
-//line ahist.w:402
+//line ahist.w:401
 
 }
 }
@@ -488,8 +488,8 @@ if err!=nil{
 //line ahist.w:88
 
 {
-del:=append([]string{},"-"+tagname)
-add:=append([]string{},tagname)
+del:=[]string{tagname,"-"+tagname}
+add:=[]string{tagname}
 changeTag(w,del,add)
 }
 
@@ -503,7 +503,7 @@ changeTag(w,del,add)
 /*38:*/
 
 
-//line ahist.w:364
+//line ahist.w:363
 
 {
 del:=append([]string{},"Put","Undo","Redo")
@@ -519,7 +519,7 @@ changeTag(w,del,nil)
 /*42:*/
 
 
-//line ahist.w:386
+//line ahist.w:385
 
 close(histch)
 
@@ -720,8 +720,8 @@ case"-"+tagname:
 //line ahist.w:88
 
 {
-del:=append([]string{},"-"+tagname)
-add:=append([]string{},tagname)
+del:=[]string{tagname,"-"+tagname}
+add:=[]string{tagname}
 changeTag(w,del,add)
 }
 
@@ -735,7 +735,7 @@ changeTag(w,del,add)
 /*38:*/
 
 
-//line ahist.w:364
+//line ahist.w:363
 
 {
 del:=append([]string{},"Put","Undo","Redo")
@@ -751,7 +751,7 @@ changeTag(w,del,nil)
 /*42:*/
 
 
-//line ahist.w:386
+//line ahist.w:385
 
 close(histch)
 
@@ -790,11 +790,10 @@ debug("cannot read from 'ctl' of the window with id %d: %s\n",id,err)
 continue
 }
 debug("dirty: %v\n",d)
-var add,del[]string
+del:=[]string{"Put","Undo","Redo"}
+var add[]string
 if d{
 add= append(add,"Put")
-}else{
-del= append(del,"Put")
 }
 add= append(add,"Undo","Redo")
 changeTag(w,del,add)
@@ -937,7 +936,7 @@ lentr= entry{b,e,s}
 /*48:*/
 
 
-//line ahist.w:446
+//line ahist.w:445
 
 debug("request to store a history: %v,%v %q\n",b,e,s)
 histch<-entry{b:b,e:e,s:s}
@@ -1096,7 +1095,7 @@ lentr= entry{b,e,s}
 /*48:*/
 
 
-//line ahist.w:446
+//line ahist.w:445
 
 debug("request to store a history: %v,%v %q\n",b,e,s)
 histch<-entry{b:b,e:e,s:s}
@@ -1278,7 +1277,7 @@ debug("show dot\n")
 /*48:*/
 
 
-//line ahist.w:446
+//line ahist.w:445
 
 debug("request to store a history: %v,%v %q\n",b,e,s)
 histch<-entry{b:b,e:e,s:s}
@@ -1348,7 +1347,7 @@ return this.b==this.e
 /*51:*/
 
 
-//line ahist.w:472
+//line ahist.w:471
 
 func changeTag(w*goacme.Window,del[]string,add[]string){
 if add==nil&&del==nil{
@@ -1359,7 +1358,7 @@ return
 /*52:*/
 
 
-//line ahist.w:484
+//line ahist.w:483
 
 f,err:=w.File("tag")
 if err!=nil{
@@ -1383,14 +1382,14 @@ s:=string(b[:n])
 /*:52*/
 
 
-//line ahist.w:477
+//line ahist.w:476
 
 
 
 /*53:*/
 
 
-//line ahist.w:503
+//line ahist.w:502
 
 if n= strings.LastIndex(s,"|");n==-1{
 n= 0
@@ -1406,14 +1405,14 @@ tag:=strings.Split(s," ")
 /*:53*/
 
 
-//line ahist.w:478
+//line ahist.w:477
 
 
 
 /*54:*/
 
 
-//line ahist.w:514
+//line ahist.w:513
 
 newtag:=append([]string{},"")
 
@@ -1421,7 +1420,7 @@ newtag:=append([]string{},"")
 /*55:*/
 
 
-//line ahist.w:522
+//line ahist.w:520
 
 for _,v:=range del{
 for i:=0;i<len(tag);{
@@ -1439,32 +1438,7 @@ tag= tag[:len(tag)-1]
 /*:55*/
 
 
-//line ahist.w:516
-
-
-
-/*56:*/
-
-
-//line ahist.w:535
-
-for _,v:=range add{
-for i:=0;i<len(tag);{
-if tag[i]!=v{
-i++
-continue
-}
-copy(tag[i:],tag[i+1:])
-tag= tag[:len(tag)-1]
-}
-}
-
-
-
-/*:56*/
-
-
-//line ahist.w:517
+//line ahist.w:515
 
 newtag= append(newtag,add...)
 newtag= append(newtag,tag...)
@@ -1474,14 +1448,14 @@ newtag= append(newtag,tag...)
 /*:54*/
 
 
-//line ahist.w:479
+//line ahist.w:478
 
 
 
-/*57:*/
+/*56:*/
 
 
-//line ahist.w:548
+//line ahist.w:533
 
 s= strings.Join(newtag," ")
 if err:=w.WriteCtl("cleartag");err!=nil{
@@ -1493,10 +1467,10 @@ debug("cannot write tag of the window with id %d: %s\n",id,err)
 return
 }
 
-/*:57*/
+/*:56*/
 
 
-//line ahist.w:480
+//line ahist.w:479
 
 }
 

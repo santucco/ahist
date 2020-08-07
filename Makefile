@@ -1,4 +1,4 @@
-# This file is part of ahist version 0.1
+# This file is part of ahist
 #
 # Copyright (c) 2020 Alexander Sychev. All rights reserved.
 #

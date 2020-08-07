@@ -79,16 +79,16 @@ debug("tagname:%s\n", tagname)
 @ We change \.{ahist} into \.{-ahist} to add a possibility to switch \.{ahist} off.
 @<Change the name of the program in the tag@>=
 {
-	del:=append([]string{}, tagname)
-	add:=append([]string{}, "-"+tagname)
+	del:=[]string{tagname, "-"+tagname}
+	add:=[]string{"-"+tagname}
 	changeTag(w, del, add)
 }
 
 @ On exit we should make an opposite change.
 @<Cleanup@>=
 {
-	del:=append([]string{}, "-"+tagname)
-	add:=append([]string{}, tagname)
+	del:=[]string{tagname, "-"+tagname}
+	add:=[]string{tagname}
 	changeTag(w, del, add)
 }
 
@@ -350,11 +350,10 @@ So we have to add command |"Put"| in case of the window is modified and |"Undo"|
 		continue
 	}
 	debug("dirty: %v\n", d)
-	var add, del []string
+	del:=[]string{"Put", "Undo", "Redo"}
+	var add []string
 	if d {
 		add=append(add, "Put") 
-	} else {
-		del=append(del, "Put") 
 	}
 	add=append(add, "Undo", "Redo")
 	changeTag(w, del, add)
@@ -514,26 +513,12 @@ tag:=strings.Split(s, " ")
 @<Compose |newtag|@>=
 newtag:=append([]string{}, "")
 @<Every part is contained in |del| we remove from |tag|@>
-@<Every part is contained in |add| we remove from |tag|@>
 newtag=append(newtag, add...)
 newtag=append(newtag, tag...)
 
 @
 @<Every part is contained in |del| we remove from |tag|@>=
 for _, v:=range del {
-	for i:=0; i<len(tag); {
-		if tag[i]!=v {
-			i++
-			continue
-		}
-		copy(tag[i:], tag[i+1:])
-		tag=tag[:len(tag)-1]
-	}
-}
-
-@
-@<Every part is contained in |add| we remove from |tag|@>=
-for _, v:=range add {
 	for i:=0; i<len(tag); {
 		if tag[i]!=v {
 			i++
