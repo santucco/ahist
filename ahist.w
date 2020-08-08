@@ -40,10 +40,26 @@ func main () {
 "fmt"
 "os"
 
+@ Let's define |dbg| flag and will switch it by |ahist+| and |ahist-|.
+@<Global variables@>=
+dbg bool
+
+@
+@<Switch debug output on@>=
+dbg=true
+debug("debug has been switched on\n")
+
+@
+@<Switch debug output off@>=
+debug("debug has been switched off\n")
+dbg=false
+
 @
 @c
 func debug(f string, args...interface{}) {
-//	fmt.Fprintf(os.Stderr, f, args...)
+	if dbg {
+		fmt.Fprintf(os.Stderr, f, args...)
+	}
 }
 
 @
@@ -79,7 +95,7 @@ debug("tagname:%s\n", tagname)
 @ We change \.{ahist} into \.{-ahist} to add a possibility to switch \.{ahist} off.
 @<Change the name of the program in the tag@>=
 {
-	del:=[]string{tagname, "-"+tagname}
+	del:=[]string{tagname, "-"+tagname, "-"+tagname+"+", "-"+tagname+"-"}
 	add:=[]string{"-"+tagname}
 	changeTag(w, del, add)
 }
@@ -87,7 +103,7 @@ debug("tagname:%s\n", tagname)
 @ On exit we should make an opposite change.
 @<Cleanup@>=
 {
-	del:=[]string{tagname, "-"+tagname}
+	del:=[]string{tagname, "-"+tagname, "-"+tagname+"+", "-"+tagname+"-"}
 	add:=[]string{tagname}
 	changeTag(w, del, add)
 }
@@ -162,7 +178,7 @@ name string
 
 @
 @<Process and continue if it is not |Look| in any form@>=
-debug("ev: %#v\n", ev)
+debug("incoming event: %+v\n", ev)
 s:=""
 type_switch: switch {
 	case ev.Type==goacme.Look|goacme.Tag:
@@ -199,10 +215,11 @@ e:=ev.End
 @ For |Look| command we set address and continue processing.
 |ahist| command we just ignore to avoid duplicates.
 |-ahist| command makes cleanups and processes to exit.
+|ahist+| and |ahist-| switch debug output on and off.
 All other commands are written back to |"event"| file and |fallthrough|
 to the next case, where a status of the window is checked.
 @<Process in case of executing a command in the body or tag@>=
-switch ev.Text {
+switch strings.TrimSpace(ev.Text) {
 	case "Look":
 		s=ev.Arg
 		@<Set addr to dot@>
@@ -210,8 +227,15 @@ switch ev.Text {
 	case tagname:
 		continue
 	case "-"+tagname:
+		debug("exiting\n")
 		@<Cleanup@>
 		return
+	case tagname+"+":
+		@<Switch debug output on@>
+		continue
+	case tagname+"-":
+		@<Switch debug output off@>
+		continue
 }
 w.UnreadEvent(ev)
 fallthrough
@@ -308,7 +332,7 @@ because it already has a place.
 		}
 		es+=string(v)
 	}
-	debug("es: %q\n", es)
+	debug("escaped search string: %q\n", es)
 	if err:=w.WriteAddr("/%s/", es); err!=nil {
 		debug("cannot write to 'addr' of the window with id %d: %s\n", id, err)
 		@<Unread event and continue@>
