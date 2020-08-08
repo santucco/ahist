@@ -16,4 +16,4 @@ Tracking can be stopped by `-ahist` command from the window at any time.
 
 * **Acme** does not reflect immediately that a window is modified. So an appearance of `Put` command can be late a bit.
 * **ahist** conflicts with other **Acme**'s applications that open `event` file, because **Acme** sends events only to a last connected client of `event` file.
-* chording is not work - **Acme** does not understand when chorded events are written back to `event` file.
+* chording does not work - **Acme** does not understand when chorded events are written back to `event` file.
