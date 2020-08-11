@@ -226,6 +226,10 @@ switch strings.TrimSpace(ev.Text) {
 		break type_switch
 	case tagname:
 		continue
+	case "-"+tagname+"+":
+		fallthrough
+	case "-"+tagname+"-":
+		fallthrough
 	case "-"+tagname:
 		debug("exiting\n")
 		@<Cleanup@>
@@ -325,13 +329,7 @@ because it already has a place.
 		lentr=entry{b,e,s}
 		@<Write history@>
 	}
-	es:=""
-	for _, v:=range s {
-		if strings.ContainsRune("|\\/[].+?()*^$", v) {
-			es+="\\"
-		}
-		es+=string(v)
-	}
+	es:=escapeSymbols(s)
 	debug("escaped search string: %q\n", es)
 	if err:=w.WriteAddr("/%s/", es); err!=nil {
 		debug("cannot write to 'addr' of the window with id %d: %s\n", id, err)
@@ -349,7 +347,7 @@ debug("read address b: %v, e: %v\n", b, e)
 
 @
 @<Set dot to addr@>=
-if w.WriteCtl("dot=addr\nshow")!=nil {
+if w.WriteCtl("dot=addr")!=nil {
 	debug("cannot write to 'ctl' of the window with id %d: %s\n", id, err)
 	@<Unread event and continue@>
 }
@@ -442,13 +440,15 @@ if !ok {
 	return
 }
 @<Open history window, if it does not exist@>
-if ee, ok:=history[entr.b]; ok && ee==entr.e {
-	continue
+if history[entr.b]!=entr.e {
+	history[entr.b]=entr.e
+	debug("writing to the history %d,%d\n", entr.b, entr.e)
+	h.Write([]byte(fmt.Sprintf("%s:#%d,#%d %q\n", name, entr.b, entr.e, entr.s)))
+	h.WriteCtl("clean")
 }
-history[entr.b]=entr.e
-debug("writing to the history %d,%d\n", entr.b, entr.e)
-h.Write([]byte(fmt.Sprintf("%s:#%d,#%d %q\n", name, entr.b, entr.e, entr.s)))
-h.WriteCtl("clean")
+debug("selecting the current position #%d,#%d in the history\n", entr.b, entr.e)
+es:=fmt.Sprintf("#%d,#%d", entr.b, entr.e)
+@<Make a selection of the current search request@>
 
 @ Event from |hch| channel is checked for a case the channel is close.
 In the case that means the history window is closed and we clear |h|, |hch| and |history|.
@@ -464,6 +464,20 @@ if !ok {
 	continue
 }
 h.UnreadEvent(ev)
+if ev.Type==goacme.Look {
+	debug("incoming event: %+v\n", ev)
+	debug("selecting the current position %q in the history\n", ev.Text)
+	es:=escapeSymbols(ev.Text)
+	@<Make a selection of the current search request@>
+}
+
+@
+@<Make a selection of the current search request@>=
+if err:=h.WriteAddr("/%s/-+", es); err!=nil {
+	debug("writing of addr failed: %s\n", err)
+} else if err:=h.WriteCtl("dot=addr\nshow"); err!=nil {
+	debug("writing of ctl failed: %s\n", err)
+}
 
 @
 @<Write history@>=
@@ -562,5 +576,17 @@ if err:=w.WriteCtl("cleartag"); err!=nil {
 }
 if _, err:=f.Write([]byte(s)); err!=nil {
 	debug("cannot write tag of the window with id %d: %s\n", id, err)
+	return
+}
+
+@
+@c
+func escapeSymbols(s string) (es string) {
+	for _, v:=range s {
+		if strings.ContainsRune("|\\/[].+?()*^$", v) {
+			es+="\\"
+		}
+		es+=string(v)
+	}
 	return
 }
