@@ -117,6 +117,7 @@ debug("tagname:%s\n", tagname)
 
 @
 @<Processing window events@>=
+@<Fix tag of the window@>
 for {
 	ev, err:=w.ReadEvent()
 	if err!=nil {
@@ -369,16 +370,16 @@ So we have to add command |"Put"| in case of the window is modified and |"Undo"|
 	_, _, _, _, d, _, _, _, err:=w.ReadCtl()
 	if err!=nil {
 		debug("cannot read from 'ctl' of the window with id %d: %s\n", id, err)
-		continue
+	} else {
+		debug("dirty: %v\n", d)
+		del:=[]string{"Put", "Undo", "Redo"}
+		var add []string
+		if d {
+			add=append(add, "Put")
+		}
+		add=append(add, "Undo", "Redo")
+		changeTag(w, del, add)
 	}
-	debug("dirty: %v\n", d)
-	del:=[]string{"Put", "Undo", "Redo"}
-	var add []string
-	if d {
-		add=append(add, "Put") 
-	}
-	add=append(add, "Undo", "Redo")
-	changeTag(w, del, add)
 }
 
 @ Removing added commands on exit
