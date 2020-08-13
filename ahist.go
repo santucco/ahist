@@ -372,19 +372,6 @@ var h*goacme.Window
 /*:49*/
 
 
-
-/*54:*/
-
-
-//line ahist.w:496
-
-var history map[int]int
-
-
-
-/*:54*/
-
-
 //line ahist.w:425
 
 for{
@@ -395,7 +382,7 @@ case entr,ok:=<-histch:
 /*50:*/
 
 
-//line ahist.w:441
+//line ahist.w:443
 
 if!ok{
 if h!=nil{
@@ -407,10 +394,10 @@ return
 }
 
 
-/*55:*/
+/*54:*/
 
 
-//line ahist.w:500
+//line ahist.w:496
 
 if h==nil{
 var err error
@@ -421,18 +408,16 @@ h.WriteCtl("name %s",name+"+History")
 if hch,err= h.EventChannel(1,goacme.AllTypes);err!=nil{
 return
 }
-history= make(map[int]int)
 }
 
 
 
-/*:55*/
+/*:54*/
 
 
-//line ahist.w:450
+//line ahist.w:452
 
-if history[entr.b]!=entr.e{
-history[entr.b]= entr.e
+if h.WriteAddr("/#%d,#%d/",entr.b,entr.e)!=nil{
 debug("writing to the history %d,%d\n",entr.b,entr.e)
 h.Write([]byte(fmt.Sprintf("%s:#%d,#%d %q\n",name,entr.b,entr.e,entr.s)))
 h.WriteCtl("clean")
@@ -457,7 +442,7 @@ debug("writing of ctl failed: %s\n",err)
 /*:52*/
 
 
-//line ahist.w:459
+//line ahist.w:460
 
 
 
@@ -473,7 +458,7 @@ case ev,ok:=<-hch:
 /*51:*/
 
 
-//line ahist.w:464
+//line ahist.w:465
 
 if!ok{
 debug("history is closed\n")
@@ -481,7 +466,6 @@ h.Del(true)
 h.Close()
 h= nil
 hch= nil
-history= nil
 continue
 }
 h.UnreadEvent(ev)
@@ -1517,10 +1501,10 @@ return this.b==this.e
 
 
 
-/*56:*/
+/*55:*/
 
 
-//line ahist.w:517
+//line ahist.w:512
 
 func changeTag(w*goacme.Window,del[]string,add[]string){
 if add==nil&&del==nil{
@@ -1528,10 +1512,10 @@ return
 }
 
 
-/*57:*/
+/*56:*/
 
 
-//line ahist.w:529
+//line ahist.w:524
 
 f,err:=w.File("tag")
 if err!=nil{
@@ -1552,17 +1536,17 @@ s:=string(b[:n])
 
 
 
-/*:57*/
+/*:56*/
 
 
-//line ahist.w:522
+//line ahist.w:517
 
 
 
-/*58:*/
+/*57:*/
 
 
-//line ahist.w:548
+//line ahist.w:543
 
 if n= strings.LastIndex(s,"|");n==-1{
 n= 0
@@ -1575,25 +1559,25 @@ tag:=strings.Split(s," ")
 
 
 
-/*:58*/
+/*:57*/
 
 
-//line ahist.w:523
+//line ahist.w:518
 
+
+
+/*58:*/
+
+
+//line ahist.w:554
+
+newtag:=append([]string{},"")
 
 
 /*59:*/
 
 
-//line ahist.w:559
-
-newtag:=append([]string{},"")
-
-
-/*60:*/
-
-
-//line ahist.w:566
+//line ahist.w:561
 
 for _,v:=range del{
 for i:=0;i<len(tag);{
@@ -1608,27 +1592,27 @@ tag= tag[:len(tag)-1]
 
 
 
-/*:60*/
+/*:59*/
 
 
-//line ahist.w:561
+//line ahist.w:556
 
 newtag= append(newtag,add...)
 newtag= append(newtag,tag...)
 
 
 
-/*:59*/
+/*:58*/
 
 
-//line ahist.w:524
+//line ahist.w:519
 
 
 
-/*61:*/
+/*60:*/
 
 
-//line ahist.w:579
+//line ahist.w:574
 
 s= strings.Join(newtag," ")
 if err:=w.WriteCtl("cleartag");err!=nil{
@@ -1642,23 +1626,23 @@ return
 
 
 
-/*:61*/
+/*:60*/
 
 
-//line ahist.w:525
+//line ahist.w:520
 
 }
 
 
 
-/*:56*/
+/*:55*/
 
 
 
-/*62:*/
+/*61:*/
 
 
-//line ahist.w:591
+//line ahist.w:586
 
 func escapeSymbols(s string)(es string){
 for _,v:=range s{
@@ -1670,6 +1654,6 @@ es+= string(v)
 return
 }
 
-/*:62*/
+/*:61*/
 
 

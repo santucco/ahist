@@ -438,6 +438,8 @@ go func(){
 var h *goacme.Window
 
 @ Events from |histch| channel is written to the history.
+Before writing a history entry we look for the address in the history window and
+write the entry only if it has not been found.
 @<Process |entr| entry from |histch|@>=
 if !ok {
 	if h!=nil {
@@ -448,8 +450,7 @@ if !ok {
 	return
 }
 @<Open history window, if it does not exist@>
-if history[entr.b]!=entr.e {
-	history[entr.b]=entr.e
+if h.WriteAddr("/#%d,#%d/", entr.b, entr.e)!=nil {
 	debug("writing to the history %d,%d\n", entr.b, entr.e)
 	h.Write([]byte(fmt.Sprintf("%s:#%d,#%d %q\n", name, entr.b, entr.e, entr.s)))
 	h.WriteCtl("clean")
@@ -459,7 +460,7 @@ es:=fmt.Sprintf("#%d,#%d", entr.b, entr.e)
 @<Make a selection of the current search request@>
 
 @ Event from |hch| channel is checked for a case the channel is close.
-In the case that means the history window is closed and we clear |h|, |hch| and |history|.
+In the case that means the history window is closed and we clear |h| and |hch|.
 Otherwise we just write the event back.
 @<Process |ev| event from |hch| event channel of the window@>=
 if !ok {
@@ -468,7 +469,6 @@ if !ok {
 	h.Close()
 	h=nil
 	hch=nil
-	history=nil
 	continue
 }
 h.UnreadEvent(ev)
@@ -492,11 +492,7 @@ if err:=h.WriteAddr("/%s/-+", es); err!=nil {
 debug("request to store a history: %v,%v %q\n", b, e, s)
 histch<-entry{b:b, e:e, s:s}
 
-@
-@<Variables outside the loop@>=
-var history map[int]int
-
-@ If the history window |h| does not exist, we create it and (re)create |history| map too.
+@ If the history window |h| does not exist, we create it.
 @<Open history window, if it does not exist@>=
 if h==nil {
 	var err error
@@ -507,7 +503,6 @@ if h==nil {
 	if hch, err=h.EventChannel(1, goacme.AllTypes); err!=nil {
 		return
 	}
-	history=make(map[int]int)
 }
 
 @ |changeTag| function.
