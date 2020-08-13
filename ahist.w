@@ -177,10 +177,12 @@ name string
 @<Show dot@>
 @<Write history@>
 
-@
+@ |b,e| address pair is taken from the |ev| event.
 @<Process and continue if it is not |Look| in any form@>=
 debug("incoming event: %+v\n", ev)
 s:=""
+b:=ev.Begin
+e:=ev.End
 type_switch: switch {
 	case ev.Type==goacme.Look|goacme.Tag:
 		@<Process in case of a request by |B3| mouse button in the tag@>
@@ -195,8 +197,10 @@ type_switch: switch {
 		@<Unread event and continue@>
 }
 
-@ We take a search string from |ev| event and set dot 
+@ We take a search string from |ev| event and set dot.
+Also we have to clean |b,e| because it is an address in the tag.
 @<Process in case of a request by |B3| mouse button in the tag@>=
+b,e=0,0
 s=ev.Text
 if len(ev.Arg)>0 {
 	s+=" "+ev.Arg
@@ -209,8 +213,6 @@ s=ev.Text
 if len(ev.Arg)>0 {
 	s+=" "+ev.Arg
 }
-b:=ev.Begin
-e:=ev.End
 @<Set addr to |b, e|@>
 
 @ For |Look| command we set address and continue processing.
@@ -222,8 +224,7 @@ to the next case, where a status of the window is checked.
 @<Process in case of executing a command in the body or tag@>=
 switch strings.TrimSpace(ev.Text) {
 	case "Look":
-		s=ev.Arg
-		@<Set addr to dot@>
+		@<Process in case of executing |Look| command@>
 		break type_switch
 	case tagname:
 		continue
@@ -245,6 +246,12 @@ switch strings.TrimSpace(ev.Text) {
 w.UnreadEvent(ev)
 fallthrough
 
+@ We take a search string from an argument of |Look| command.
+Current address is set to dot, then |b,e| pair is set to the current address.
+@<Process in case of executing |Look| command@>=
+s=ev.Arg
+@<Set addr to dot@>
+@<Read addr into |b, e|@>
 
 @
 @<Unread event and continue@>=
@@ -252,14 +259,14 @@ w.UnreadEvent(ev)
 continue
 
 @ If the |ev| event contains a search string, use it.
-Otherwise we should read selected the string from the window's body.
+Otherwise we should read selected the string from the window's body and read its address into |b,e|.
 @<Process |Look|@>=
 {
-	@<Read addr into |b, e|@>
 	if len(s)>0 {
 		@<Make a search of |s|@>
 	} else {
 		@<Look for selected string@>
+		@<Read addr into |b, e|@>
 	}
 }
 
@@ -340,7 +347,7 @@ because it already has a place.
 
 @
 @<Read addr into |b, e|@>=
-b, e, err:=w.ReadAddr()
+b, e, err=w.ReadAddr()
 if err!=nil {
 	@<Unread event and continue@>
 }

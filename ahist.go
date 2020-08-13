@@ -154,29 +154,29 @@ name string
 
 
 
-/*34:*/
+/*35:*/
 
 
-//line ahist.w:306
+//line ahist.w:313
 
 lentr entry
 
 
 
-/*:34*/
+/*:35*/
 
 
 
-/*44:*/
+/*45:*/
 
 
-//line ahist.w:404
+//line ahist.w:411
 
 histch chan entry= make(chan entry)
 
 
 
-/*:44*/
+/*:45*/
 
 
 //line ahist.w:19
@@ -186,10 +186,10 @@ histch chan entry= make(chan entry)
 type(
 
 
-/*43:*/
+/*44:*/
 
 
-//line ahist.w:397
+//line ahist.w:404
 
 entry struct{
 b,e int
@@ -198,7 +198,7 @@ s string
 
 
 
-/*:43*/
+/*:44*/
 
 
 //line ahist.w:23
@@ -339,63 +339,63 @@ name= string(ss[0])
 
 
 
-/*47:*/
+/*48:*/
 
 
-//line ahist.w:416
+//line ahist.w:423
 
 go func(){
 
 
-/*46:*/
+/*47:*/
 
 
-//line ahist.w:412
+//line ahist.w:419
 
 var hch<-chan*goacme.Event
 
 
 
-/*:46*/
+/*:47*/
 
 
 
-/*48:*/
+/*49:*/
 
 
-//line ahist.w:430
+//line ahist.w:437
 
 var h*goacme.Window
 
 
 
-/*:48*/
+/*:49*/
 
 
 
-/*53:*/
+/*54:*/
 
 
-//line ahist.w:489
+//line ahist.w:496
 
 var history map[int]int
 
 
 
-/*:53*/
+/*:54*/
 
 
-//line ahist.w:418
+//line ahist.w:425
 
 for{
 select{
 case entr,ok:=<-histch:
 
 
-/*49:*/
+/*50:*/
 
 
-//line ahist.w:434
+//line ahist.w:441
 
 if!ok{
 if h!=nil{
@@ -407,10 +407,10 @@ return
 }
 
 
-/*54:*/
+/*55:*/
 
 
-//line ahist.w:493
+//line ahist.w:500
 
 if h==nil{
 var err error
@@ -426,10 +426,10 @@ history= make(map[int]int)
 
 
 
-/*:54*/
+/*:55*/
 
 
-//line ahist.w:443
+//line ahist.w:450
 
 if history[entr.b]!=entr.e{
 history[entr.b]= entr.e
@@ -441,10 +441,10 @@ debug("selecting the current position #%d,#%d in the history\n",entr.b,entr.e)
 es:=fmt.Sprintf("#%d,#%d",entr.b,entr.e)
 
 
-/*51:*/
+/*52:*/
 
 
-//line ahist.w:476
+//line ahist.w:483
 
 if err:=h.WriteAddr("/%s/-+",es);err!=nil{
 debug("writing of addr failed: %s\n",err)
@@ -454,26 +454,26 @@ debug("writing of ctl failed: %s\n",err)
 
 
 
-/*:51*/
+/*:52*/
 
 
-//line ahist.w:452
+//line ahist.w:459
 
 
 
 
-/*:49*/
+/*:50*/
 
 
-//line ahist.w:422
+//line ahist.w:429
 
 case ev,ok:=<-hch:
 
 
-/*50:*/
+/*51:*/
 
 
-//line ahist.w:457
+//line ahist.w:464
 
 if!ok{
 debug("history is closed\n")
@@ -491,10 +491,10 @@ debug("selecting the current position %q in the history\n",ev.Text)
 es:=escapeSymbols(ev.Text)
 
 
-/*51:*/
+/*52:*/
 
 
-//line ahist.w:476
+//line ahist.w:483
 
 if err:=h.WriteAddr("/%s/-+",es);err!=nil{
 debug("writing of addr failed: %s\n",err)
@@ -504,19 +504,19 @@ debug("writing of ctl failed: %s\n",err)
 
 
 
-/*:51*/
+/*:52*/
 
 
-//line ahist.w:472
+//line ahist.w:479
 
 }
 
 
 
-/*:50*/
+/*:51*/
 
 
-//line ahist.w:424
+//line ahist.w:431
 
 }
 }
@@ -524,7 +524,7 @@ debug("writing of ctl failed: %s\n",err)
 
 
 
-/*:47*/
+/*:48*/
 
 
 //line ahist.w:34
@@ -538,10 +538,10 @@ debug("writing of ctl failed: %s\n",err)
 
 
 
-/*40:*/
+/*41:*/
 
 
-//line ahist.w:368
+//line ahist.w:375
 
 {
 _,_,_,_,d,_,_,_,err:=w.ReadCtl()
@@ -561,7 +561,7 @@ changeTag(w,del,add)
 
 
 
-/*:40*/
+/*:41*/
 
 
 //line ahist.w:120
@@ -589,10 +589,10 @@ changeTag(w,del,add)
 
 
 
-/*41:*/
+/*42:*/
 
 
-//line ahist.w:386
+//line ahist.w:393
 
 {
 del:=append([]string{},"Put","Undo","Redo")
@@ -601,20 +601,20 @@ changeTag(w,del,nil)
 
 
 
-/*:41*/
+/*:42*/
 
 
 
-/*45:*/
+/*46:*/
 
 
-//line ahist.w:408
+//line ahist.w:415
 
 close(histch)
 
 
 
-/*:45*/
+/*:46*/
 
 
 //line ahist.w:124
@@ -637,6 +637,8 @@ return
 
 debug("incoming event: %+v\n",ev)
 s:=""
+b:=ev.Begin
+e:=ev.End
 type_switch:switch{
 case ev.Type==goacme.Look|goacme.Tag:
 
@@ -644,46 +646,47 @@ case ev.Type==goacme.Look|goacme.Tag:
 /*25:*/
 
 
-//line ahist.w:199
+//line ahist.w:202
 
+b,e= 0,0
 s= ev.Text
 if len(ev.Arg)> 0{
 s+= " "+ev.Arg
 }
 
 
-/*31:*/
+/*32:*/
 
 
-//line ahist.w:273
+//line ahist.w:280
 
 if w.WriteCtl("addr=dot")!=nil{
 
 
-/*28:*/
+/*29:*/
 
 
-//line ahist.w:250
+//line ahist.w:257
 
 w.UnreadEvent(ev)
 continue
 
 
 
-/*:28*/
+/*:29*/
 
 
-//line ahist.w:275
+//line ahist.w:282
 
 }
 debug("set addr to dot\n")
 
 
 
-/*:31*/
+/*:32*/
 
 
-//line ahist.w:204
+//line ahist.w:208
 
 
 
@@ -691,7 +694,7 @@ debug("set addr to dot\n")
 /*:25*/
 
 
-//line ahist.w:186
+//line ahist.w:188
 
 case ev.Type==goacme.Look:
 
@@ -699,49 +702,47 @@ case ev.Type==goacme.Look:
 /*26:*/
 
 
-//line ahist.w:207
+//line ahist.w:211
 
 s= ev.Text
 if len(ev.Arg)> 0{
 s+= " "+ev.Arg
 }
-b:=ev.Begin
-e:=ev.End
 
 
-/*33:*/
+/*34:*/
 
 
-//line ahist.w:296
+//line ahist.w:303
 
 if err:=w.WriteAddr("#%d,#%d",b,e);err!=nil{
 debug("cannot write to 'addr' of the window with id %d: %s\n",id,err)
 
 
-/*28:*/
+/*29:*/
 
 
-//line ahist.w:250
+//line ahist.w:257
 
 w.UnreadEvent(ev)
 continue
 
 
 
-/*:28*/
+/*:29*/
 
 
-//line ahist.w:299
+//line ahist.w:306
 
 }
 debug("set addr to %d, %d\n",b,e)
 
 
 
-/*:33*/
+/*:34*/
 
 
-//line ahist.w:214
+//line ahist.w:216
 
 
 
@@ -749,7 +750,7 @@ debug("set addr to %d, %d\n",b,e)
 /*:26*/
 
 
-//line ahist.w:188
+//line ahist.w:190
 
 case ev.Type==goacme.Execute||ev.Type==goacme.Execute|goacme.Tag:
 
@@ -757,45 +758,96 @@ case ev.Type==goacme.Execute||ev.Type==goacme.Execute|goacme.Tag:
 /*27:*/
 
 
-//line ahist.w:222
+//line ahist.w:224
 
 switch strings.TrimSpace(ev.Text){
 case"Look":
-s= ev.Arg
-
-
-/*31:*/
-
-
-//line ahist.w:273
-
-if w.WriteCtl("addr=dot")!=nil{
 
 
 /*28:*/
 
 
-//line ahist.w:250
+//line ahist.w:251
+
+s= ev.Arg
+
+
+/*32:*/
+
+
+//line ahist.w:280
+
+if w.WriteCtl("addr=dot")!=nil{
+
+
+/*29:*/
+
+
+//line ahist.w:257
 
 w.UnreadEvent(ev)
 continue
 
 
 
-/*:28*/
+/*:29*/
 
 
-//line ahist.w:275
+//line ahist.w:282
 
 }
 debug("set addr to dot\n")
 
 
 
-/*:31*/
+/*:32*/
 
 
-//line ahist.w:226
+//line ahist.w:253
+
+
+
+/*38:*/
+
+
+//line ahist.w:349
+
+b,e,err= w.ReadAddr()
+if err!=nil{
+
+
+/*29:*/
+
+
+//line ahist.w:257
+
+w.UnreadEvent(ev)
+continue
+
+
+
+/*:29*/
+
+
+//line ahist.w:352
+
+}
+debug("read address b: %v, e: %v\n",b,e)
+
+
+
+/*:38*/
+
+
+//line ahist.w:254
+
+
+
+
+/*:28*/
+
+
+//line ahist.w:227
 
 break type_switch
 case tagname:
@@ -826,10 +878,10 @@ changeTag(w,del,add)
 
 
 
-/*41:*/
+/*42:*/
 
 
-//line ahist.w:386
+//line ahist.w:393
 
 {
 del:=append([]string{},"Put","Undo","Redo")
@@ -838,23 +890,23 @@ changeTag(w,del,nil)
 
 
 
-/*:41*/
+/*:42*/
 
 
 
-/*45:*/
+/*46:*/
 
 
-//line ahist.w:408
+//line ahist.w:415
 
 close(histch)
 
 
 
-/*:45*/
+/*:46*/
 
 
-//line ahist.w:236
+//line ahist.w:237
 
 return
 case tagname+"+":
@@ -873,7 +925,7 @@ debug("debug has been switched on\n")
 /*:6*/
 
 
-//line ahist.w:239
+//line ahist.w:240
 
 continue
 case tagname+"-":
@@ -892,7 +944,7 @@ dbg= false
 /*:7*/
 
 
-//line ahist.w:242
+//line ahist.w:243
 
 continue
 }
@@ -901,19 +953,18 @@ fallthrough
 
 
 
-
 /*:27*/
 
 
-//line ahist.w:190
+//line ahist.w:192
 
 case ev.Type==goacme.Insert||ev.Type==goacme.Delete:
 
 
-/*40:*/
+/*41:*/
 
 
-//line ahist.w:368
+//line ahist.w:375
 
 {
 _,_,_,_,d,_,_,_,err:=w.ReadCtl()
@@ -933,29 +984,29 @@ changeTag(w,del,add)
 
 
 
-/*:40*/
+/*:41*/
 
 
-//line ahist.w:192
+//line ahist.w:194
 
 continue
 default:
 
 
-/*28:*/
+/*29:*/
 
 
-//line ahist.w:250
+//line ahist.w:257
 
 w.UnreadEvent(ev)
 continue
 
 
 
-/*:28*/
+/*:29*/
 
 
-//line ahist.w:195
+//line ahist.w:197
 
 }
 
@@ -968,55 +1019,19 @@ continue
 
 
 
-/*29:*/
+/*30:*/
 
 
-//line ahist.w:256
+//line ahist.w:263
 
 {
+if len(s)> 0{
 
 
 /*37:*/
 
 
-//line ahist.w:342
-
-b,e,err:=w.ReadAddr()
-if err!=nil{
-
-
-/*28:*/
-
-
-//line ahist.w:250
-
-w.UnreadEvent(ev)
-continue
-
-
-
-/*:28*/
-
-
-//line ahist.w:345
-
-}
-debug("read address b: %v, e: %v\n",b,e)
-
-
-
-/*:37*/
-
-
-//line ahist.w:258
-
-if len(s)> 0{
-
-
-/*36:*/
-
-
-//line ahist.w:320
+//line ahist.w:327
 {
 debug("last entry : %v\n",lentr)
 if len(s)==0{
@@ -1026,59 +1041,59 @@ e= lentr.e
 s= lentr.s
 
 
-/*33:*/
+/*34:*/
 
 
-//line ahist.w:296
+//line ahist.w:303
 
 if err:=w.WriteAddr("#%d,#%d",b,e);err!=nil{
 debug("cannot write to 'addr' of the window with id %d: %s\n",id,err)
 
 
-/*28:*/
+/*29:*/
 
 
-//line ahist.w:250
+//line ahist.w:257
 
 w.UnreadEvent(ev)
 continue
 
 
 
-/*:28*/
+/*:29*/
 
 
-//line ahist.w:299
+//line ahist.w:306
 
 }
 debug("set addr to %d, %d\n",b,e)
 
 
 
-/*:33*/
+/*:34*/
 
 
-//line ahist.w:327
+//line ahist.w:334
 
 }
 }else if b!=e{
 lentr= entry{b,e,s}
 
 
-/*52:*/
+/*53:*/
 
 
-//line ahist.w:484
+//line ahist.w:491
 
 debug("request to store a history: %v,%v %q\n",b,e,s)
 histch<-entry{b:b,e:e,s:s}
 
 
 
-/*:52*/
+/*:53*/
 
 
-//line ahist.w:331
+//line ahist.w:338
 
 }
 es:=escapeSymbols(s)
@@ -1087,65 +1102,65 @@ if err:=w.WriteAddr("/%s/",es);err!=nil{
 debug("cannot write to 'addr' of the window with id %d: %s\n",id,err)
 
 
-/*28:*/
+/*29:*/
 
 
-//line ahist.w:250
+//line ahist.w:257
 
 w.UnreadEvent(ev)
 continue
 
 
 
-/*:28*/
+/*:29*/
 
 
-//line ahist.w:337
+//line ahist.w:344
 
 }
 }
 
 
 
-/*:36*/
+/*:37*/
 
 
-//line ahist.w:260
+//line ahist.w:266
 
 }else{
 
 
-/*30:*/
+/*31:*/
 
 
-//line ahist.w:267
+//line ahist.w:274
 {
 
 
-/*32:*/
+/*33:*/
 
 
-//line ahist.w:280
+//line ahist.w:287
 {
 d,err:=w.File("xdata")
 if err!=nil{
 debug("cannot read from 'xdata' of the window with id %d: %s\n",id,err)
 
 
-/*28:*/
+/*29:*/
 
 
-//line ahist.w:250
+//line ahist.w:257
 
 w.UnreadEvent(ev)
 continue
 
 
 
-/*:28*/
+/*:29*/
 
 
-//line ahist.w:284
+//line ahist.w:291
 
 }
 
@@ -1159,17 +1174,17 @@ debug("read address from xdata b: %v, e: %v\n",b,e)
 
 
 
-/*:32*/
+/*:33*/
 
 
-//line ahist.w:268
+//line ahist.w:275
 
 
 
-/*36:*/
+/*37:*/
 
 
-//line ahist.w:320
+//line ahist.w:327
 {
 debug("last entry : %v\n",lentr)
 if len(s)==0{
@@ -1179,59 +1194,59 @@ e= lentr.e
 s= lentr.s
 
 
-/*33:*/
+/*34:*/
 
 
-//line ahist.w:296
+//line ahist.w:303
 
 if err:=w.WriteAddr("#%d,#%d",b,e);err!=nil{
 debug("cannot write to 'addr' of the window with id %d: %s\n",id,err)
 
 
-/*28:*/
+/*29:*/
 
 
-//line ahist.w:250
+//line ahist.w:257
 
 w.UnreadEvent(ev)
 continue
 
 
 
-/*:28*/
+/*:29*/
 
 
-//line ahist.w:299
+//line ahist.w:306
 
 }
 debug("set addr to %d, %d\n",b,e)
 
 
 
-/*:33*/
+/*:34*/
 
 
-//line ahist.w:327
+//line ahist.w:334
 
 }
 }else if b!=e{
 lentr= entry{b,e,s}
 
 
-/*52:*/
+/*53:*/
 
 
-//line ahist.w:484
+//line ahist.w:491
 
 debug("request to store a history: %v,%v %q\n",b,e,s)
 histch<-entry{b:b,e:e,s:s}
 
 
 
-/*:52*/
+/*:53*/
 
 
-//line ahist.w:331
+//line ahist.w:338
 
 }
 es:=escapeSymbols(s)
@@ -1240,31 +1255,77 @@ if err:=w.WriteAddr("/%s/",es);err!=nil{
 debug("cannot write to 'addr' of the window with id %d: %s\n",id,err)
 
 
-/*28:*/
+/*29:*/
 
 
-//line ahist.w:250
+//line ahist.w:257
 
 w.UnreadEvent(ev)
 continue
 
 
 
-/*:28*/
+/*:29*/
 
 
-//line ahist.w:337
+//line ahist.w:344
 
 }
 }
 
 
 
-/*:36*/
+/*:37*/
+
+
+//line ahist.w:276
+
+}
+
+
+
+/*:31*/
+
+
+//line ahist.w:268
+
+
+
+/*38:*/
+
+
+//line ahist.w:349
+
+b,e,err= w.ReadAddr()
+if err!=nil{
+
+
+/*29:*/
+
+
+//line ahist.w:257
+
+w.UnreadEvent(ev)
+continue
+
+
+
+/*:29*/
+
+
+//line ahist.w:352
+
+}
+debug("read address b: %v, e: %v\n",b,e)
+
+
+
+/*:38*/
 
 
 //line ahist.w:269
 
+}
 }
 
 
@@ -1272,139 +1333,129 @@ continue
 /*:30*/
 
 
-//line ahist.w:262
-
-}
-}
-
-
-
-/*:29*/
-
-
 //line ahist.w:175
-
-
-
-/*37:*/
-
-
-//line ahist.w:342
-
-b,e,err:=w.ReadAddr()
-if err!=nil{
-
-
-/*28:*/
-
-
-//line ahist.w:250
-
-w.UnreadEvent(ev)
-continue
-
-
-
-/*:28*/
-
-
-//line ahist.w:345
-
-}
-debug("read address b: %v, e: %v\n",b,e)
-
-
-
-/*:37*/
-
-
-//line ahist.w:176
-
-
-
-/*39:*/
-
-
-//line ahist.w:358
 
 
 
 /*38:*/
 
 
-//line ahist.w:350
+//line ahist.w:349
 
-if w.WriteCtl("dot=addr")!=nil{
-debug("cannot write to 'ctl' of the window with id %d: %s\n",id,err)
-
-
-/*28:*/
+b,e,err= w.ReadAddr()
+if err!=nil{
 
 
-//line ahist.w:250
+/*29:*/
+
+
+//line ahist.w:257
 
 w.UnreadEvent(ev)
 continue
 
 
 
-/*:28*/
+/*:29*/
 
 
-//line ahist.w:353
+//line ahist.w:352
 
 }
-debug("set dot to addr\n")
+debug("read address b: %v, e: %v\n",b,e)
 
 
 
 /*:38*/
 
 
-//line ahist.w:359
+//line ahist.w:176
 
-if w.WriteCtl("show")!=nil{
+
+
+/*40:*/
+
+
+//line ahist.w:365
+
+
+
+/*39:*/
+
+
+//line ahist.w:357
+
+if w.WriteCtl("dot=addr")!=nil{
 debug("cannot write to 'ctl' of the window with id %d: %s\n",id,err)
 
 
-/*28:*/
+/*29:*/
 
 
-//line ahist.w:250
+//line ahist.w:257
 
 w.UnreadEvent(ev)
 continue
 
 
 
-/*:28*/
+/*:29*/
 
 
-//line ahist.w:362
+//line ahist.w:360
 
 }
-debug("show dot\n")
+debug("set dot to addr\n")
 
 
 
 /*:39*/
 
 
+//line ahist.w:366
+
+if w.WriteCtl("show")!=nil{
+debug("cannot write to 'ctl' of the window with id %d: %s\n",id,err)
+
+
+/*29:*/
+
+
+//line ahist.w:257
+
+w.UnreadEvent(ev)
+continue
+
+
+
+/*:29*/
+
+
+//line ahist.w:369
+
+}
+debug("show dot\n")
+
+
+
+/*:40*/
+
+
 //line ahist.w:177
 
 
 
-/*52:*/
+/*53:*/
 
 
-//line ahist.w:484
+//line ahist.w:491
 
 debug("request to store a history: %v,%v %q\n",b,e,s)
 histch<-entry{b:b,e:e,s:s}
 
 
 
-/*:52*/
+/*:53*/
 
 
 //line ahist.w:178
@@ -1451,10 +1502,10 @@ fmt.Fprintf(os.Stderr,f,args...)
 
 
 
-/*35:*/
+/*36:*/
 
 
-//line ahist.w:310
+//line ahist.w:317
 
 func(this entry)empty()bool{
 return this.b==this.e
@@ -1462,14 +1513,14 @@ return this.b==this.e
 
 
 
-/*:35*/
+/*:36*/
 
 
 
-/*55:*/
+/*56:*/
 
 
-//line ahist.w:510
+//line ahist.w:517
 
 func changeTag(w*goacme.Window,del[]string,add[]string){
 if add==nil&&del==nil{
@@ -1477,10 +1528,10 @@ return
 }
 
 
-/*56:*/
+/*57:*/
 
 
-//line ahist.w:522
+//line ahist.w:529
 
 f,err:=w.File("tag")
 if err!=nil{
@@ -1501,17 +1552,17 @@ s:=string(b[:n])
 
 
 
-/*:56*/
+/*:57*/
 
 
-//line ahist.w:515
+//line ahist.w:522
 
 
 
-/*57:*/
+/*58:*/
 
 
-//line ahist.w:541
+//line ahist.w:548
 
 if n= strings.LastIndex(s,"|");n==-1{
 n= 0
@@ -1524,25 +1575,25 @@ tag:=strings.Split(s," ")
 
 
 
-/*:57*/
+/*:58*/
 
 
-//line ahist.w:516
+//line ahist.w:523
 
-
-
-/*58:*/
-
-
-//line ahist.w:552
-
-newtag:=append([]string{},"")
 
 
 /*59:*/
 
 
 //line ahist.w:559
+
+newtag:=append([]string{},"")
+
+
+/*60:*/
+
+
+//line ahist.w:566
 
 for _,v:=range del{
 for i:=0;i<len(tag);{
@@ -1557,27 +1608,27 @@ tag= tag[:len(tag)-1]
 
 
 
-/*:59*/
+/*:60*/
 
 
-//line ahist.w:554
+//line ahist.w:561
 
 newtag= append(newtag,add...)
 newtag= append(newtag,tag...)
 
 
 
-/*:58*/
+/*:59*/
 
 
-//line ahist.w:517
+//line ahist.w:524
 
 
 
-/*60:*/
+/*61:*/
 
 
-//line ahist.w:572
+//line ahist.w:579
 
 s= strings.Join(newtag," ")
 if err:=w.WriteCtl("cleartag");err!=nil{
@@ -1591,23 +1642,23 @@ return
 
 
 
-/*:60*/
+/*:61*/
 
 
-//line ahist.w:518
+//line ahist.w:525
 
 }
 
 
 
-/*:55*/
+/*:56*/
 
 
 
-/*61:*/
+/*62:*/
 
 
-//line ahist.w:584
+//line ahist.w:591
 
 func escapeSymbols(s string)(es string){
 for _,v:=range s{
@@ -1619,6 +1670,6 @@ es+= string(v)
 return
 }
 
-/*:61*/
+/*:62*/
 
 
