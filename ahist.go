@@ -1553,9 +1553,7 @@ n= 0
 }else{
 n++
 }
-s= s[n:]
-s= strings.TrimLeft(s," ")
-tag:=strings.Split(s," ")
+tag:=strings.Fields(s[n:])
 
 
 
@@ -1569,15 +1567,14 @@ tag:=strings.Split(s," ")
 /*58:*/
 
 
-//line ahist.w:554
+//line ahist.w:552
 
-newtag:=append([]string{},"")
 
 
 /*59:*/
 
 
-//line ahist.w:561
+//line ahist.w:558
 
 for _,v:=range del{
 for i:=0;i<len(tag);{
@@ -1595,9 +1592,9 @@ tag= tag[:len(tag)-1]
 /*:59*/
 
 
-//line ahist.w:556
+//line ahist.w:553
 
-newtag= append(newtag,add...)
+newtag:=append([]string{""},add...)
 newtag= append(newtag,tag...)
 
 
@@ -1612,7 +1609,7 @@ newtag= append(newtag,tag...)
 /*60:*/
 
 
-//line ahist.w:574
+//line ahist.w:571
 
 s= strings.Join(newtag," ")
 if err:=w.WriteCtl("cleartag");err!=nil{
@@ -1642,7 +1639,7 @@ return
 /*61:*/
 
 
-//line ahist.w:586
+//line ahist.w:583
 
 func escapeSymbols(s string)(es string){
 for _,v:=range s{

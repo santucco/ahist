@@ -546,15 +546,12 @@ if n=strings.LastIndex(s, "|"); n==-1 {
 } else {
 	n++
 }
-s=s[n:]
-s=strings.TrimLeft(s, " ")
-tag:=strings.Split(s, " ")
+tag:=strings.Fields(s[n:])
 
 @
 @<Compose |newtag|@>=
-newtag:=append([]string{}, "")
 @<Every part is contained in |del| we remove from |tag|@>
-newtag=append(newtag, add...)
+newtag:=append([]string{""}, add...)
 newtag=append(newtag, tag...)
 
 @

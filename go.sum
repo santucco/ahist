@@ -1,0 +1,4 @@
+9fans.net/go v0.0.2 h1:RYM6lWITV8oADrwLfdzxmt8ucfW6UtP9v1jg4qAbqts=
+9fans.net/go v0.0.2/go.mod h1:lfPdxjq9v8pVQXUMBCx5EO5oLXWQFlKRQgs1kEkjoIM=
+github.com/santucco/goacme v0.8.0 h1:OJEmFv03ev79p5f/4QRhY/aQTGNYgkMgTog3DnIM25E=
+github.com/santucco/goacme v0.8.0/go.mod h1:Xb7Jlmoa/kv7ZoGLdmQU/jE4IZHBi73ss+Iq61pdwjo=
