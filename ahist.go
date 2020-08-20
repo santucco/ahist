@@ -1548,7 +1548,7 @@ s:=string(b[:n])
 
 //line ahist.w:543
 
-if n= strings.LastIndex(s,"|");n==-1{
+if n= strings.Index(s,"|");n==-1{
 n= 0
 }else{
 n++

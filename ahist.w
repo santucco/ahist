@@ -541,7 +541,7 @@ s:=string(b[:n])
 
 @
 @<Split tag into |tag| fields after the pipe symbol@>=
-if n=strings.LastIndex(s, "|"); n==-1 {
+if n=strings.Index(s, "|"); n==-1 {
 	n=0
 } else {
 	n++
